@@ -3,9 +3,8 @@
     var $tables = $('table[id="tbl_grade-info"]');
     for (var i = $tables.length-1; i >= 0; --i) {
       var $table = $tables.eq(i);
-      var $codes = $table.find('tbody > tr > td:nth-child(2)');
-      if (!isNaN(+$codes.eq(1).text())) {
-        $codes.each(function() {
+      if ($table.find('thead > tr:nth-child(2) > th:nth-child(2)').text() === 'Class Code') {
+        $table.find('tbody > tr > td:nth-child(2)').each(function() {
           arr.push(+$(this).text());
         });
         break;

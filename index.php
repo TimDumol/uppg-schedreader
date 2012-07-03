@@ -116,8 +116,8 @@ EOT
       if ($stmt->execute()) {
         $scheds = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($scheds as $sched) {
-          print_r($sched);
-          echo '<hr>';
+          //print_r($sched);
+          //echo '<hr>';
           $event = $calService->newEventEntry();
           $event->title = $calService->newTitle($sched['class']);
           $event->content = $calService->newContent($sched['class']);
@@ -128,7 +128,7 @@ EOT
             "DTEND;TZID=Asia/Manila;VALUE={$dateVal}T{$sched['time_end']}00\r\n" .
             "RRULE:FREQ=WEEKLY;BYDAY=" . $sched['days'] . ";UNTIL=20121008\r\n";
           $event->recurrence = $calService->newRecurrence($recurrence);
-          echo "$recurrence\n";
+          //echo "$recurrence\n";
           $newEvent = $calService->insertEvent($event, $uri);
         }
       }
@@ -167,26 +167,6 @@ function logout($redirectUrl) {
   session_destroy();
   header('Location: ' . $redirectUrl);
   exit;
-}
-
-/**
- * Prints basic properties of a Google Data feed.
- *
- * @param Zend_Gdata_Feed $feed A feed object to print.
- * @return void
- */
-function printFeed($feed) {
-  echo '<ol>';
-  foreach ($feed->entries as $entry) {
-    $alternateLink = '';
-    foreach ($entry->link as $link) {
-      if ($link->getRel() == 'alternate') {
-        $alternateLink = $link->getHref();
-      }
-    }
-    echo "<li><a href=\"$alternateLink\" target=\"_new\">$entry->title</a></li>";
-  }
-  echo '</ol>';
 }
 
 /**
