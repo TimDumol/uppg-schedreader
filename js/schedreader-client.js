@@ -1,11 +1,16 @@
 (function($) {
     var arr = [];
     var $tables = $('table[id="tbl_grade-info"]');
-    var $table = $tables.eq($tables.length - 2);
-    $table.find('tbody > tr > td:nth-child(2)').each(function(idx) {
-      var $this = $(this);
-      arr.push(+$this.text());
-    });
+    for (var i = $tables.length-1; i >= 0; --i) {
+      var $table = $tables.eq(i);
+      var $codes = $table.find('tbody > tr > td:nth-child(2)');
+      if (!isNaN(+$codes.eq(1).text())) {
+        $codes.each(function() {
+          arr.push(+$(this).text());
+        });
+        break;
+      }
+    }
     $(document.body).append('<div id="sreader-overlay"></div>');
     var $overlay = $('#sreader-overlay');
     $overlay.css({
