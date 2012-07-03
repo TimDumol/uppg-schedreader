@@ -1,0 +1,13 @@
+#schedule {
+  width: 80%;
+  height: 10em;
+}
+
+textarea {
+  display: block;
+}
+
+#injector {
+  width: 80%;
+  height: 3em;
+}
