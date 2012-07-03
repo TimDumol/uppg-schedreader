@@ -78,8 +78,10 @@ try {
   die("<p>Could not connect to database. Wrong username/password?</p>");
 }
 
-$ch = curl_init('https://crs.upd.edu.ph/schedule/120121/P');
-$fp = fopen('page.html','w');
+
+for ($ascii = ord('R'); $ascii <= ord('Z'); ++$ascii) {
+$ch = curl_init('https://crs.upd.edu.ph/schedule/120121/' . chr($ascii));
+$fp = fopen('/tmp/schedreader-page.html','w');
 curl_setopt_array($ch, array(
   CURLOPT_HEADER => true,
   CURLOPT_FOLLOWLOCATION => true,
@@ -91,7 +93,7 @@ curl_close($ch);
 fclose($fp);
 
 $dom = new DOMDocument('1.0');
-$dom->loadHTMLFile('page.html');
+$dom->loadHTMLFile('/tmp/schedreader-page.html');
 
 $xpath = new DOMXPath($dom);
 $nodes = $xpath->evaluate('//table[@id="tbl_schedule"]/tbody/tr');
@@ -106,10 +108,14 @@ if ($nodes) {
   for ($i = 0; $i < $nodesLength; ++$i) {
     $node = $nodes->item($i);
     $children = $node->childNodes;
+    if (!isset($children) || !is_object($children)) continue;
     $classCode = +$children->item(0)->textContent;
     $class = $children->item(2)->textContent;
     //$credits = +$children->item(4)->textContent;
     $sri = $children->item(6);
+    if (!isset($sri->childNodes) || !is_object($sri->childNodes)) {
+      continue;
+    }
     $schedule = trim($sri->childNodes->item(0)->textContent);
     echo "$classCode ; $class ; $schedule <br>";
     /*
@@ -166,4 +172,5 @@ if ($nodes) {
   }
 } else {
   echo "Joo fail!";
+}
 }

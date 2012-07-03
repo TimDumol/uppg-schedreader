@@ -93,35 +93,40 @@ EOT;
 
     // TODO: Somehow unhard-code the year and sem
     $stmt = $conn->prepare(<<<'EOT'
-SELECT c.class class, TIME_FORMAT(m.start_time, '%H%i') start_time,
-       TIME_FORMAT(m.end_time, '%H%i') end_time, d.day day
+SELECT c.class class, TIME_FORMAT(m.time_start, '%H%i') time_start,
+       TIME_FORMAT(m.time_end, '%H%i') time_end, GROUP_CONCAT(d.day SEPARATOR ',') days
   FROM (classes c
   INNER JOIN class_meetings m
     ON c.code = m.code)
   INNER JOIN meeting_days d
-    ON m.code = c.code
-      AND m.start_time = c.start_time
-      AND m.end_time = c.end_time
-  WHERE
-    c.code = :code,
-    c.year = 2012,
-    c.sem = 1
+    ON d.code = m.code
+      AND d.time_start = m.time_start
+      AND d.time_end = m.time_end
+  GROUP BY
+    c.code, c.year, c.sem, c.class, m.time_start, m.time_end
+  HAVING
+    c.code = :code
+    AND c.year = 2012
+    AND c.sem = 1
 EOT
 );
+
     foreach ($decoded as $classCode) {
       $stmt->bindParam(':code', $classCode);
       if ($stmt->execute()) {
         $scheds = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($scheds as $sched) {
+          print_r($sched);
+          echo '<hr>';
           $event = $calService->newEventEntry();
           $event->title = $calService->newTitle($sched['class']);
           $event->content = $calService->newContent($sched['class']);
           // TODO: Somehow make the year/month unhardcoded
-          $dateVal = "DATETIME:201206" . $map[$sched['day']];
+          $dateVal = "DATETIME:201206" . $map[substr($sched['days'], 0, 2)];
           // TODO: Somehow make the end year/month unhardcoded
-          $recurrence = "DTSTART;TZID=Asia/Manila;VALUE={$dateVal}T{$sched['start_time']}00\r\n" .
-            "DTEND;TZID=Asia/Manila;VALUE={$dateVal}T{$sched['end_time']}00\r\n" .
-            "RRULE:FREQ=WEEKLY;BYDAY=" . implode(",", $sched->days) . ";UNTIL=20121008\r\n";
+          $recurrence = "DTSTART;TZID=Asia/Manila;VALUE={$dateVal}T{$sched['time_start']}00\r\n" .
+            "DTEND;TZID=Asia/Manila;VALUE={$dateVal}T{$sched['time_end']}00\r\n" .
+            "RRULE:FREQ=WEEKLY;BYDAY=" . $sched['days'] . ";UNTIL=20121008\r\n";
           $event->recurrence = $calService->newRecurrence($recurrence);
           echo "$recurrence\n";
           $newEvent = $calService->insertEvent($event, $uri);
@@ -133,7 +138,19 @@ EOT
   }
 
   // Done.
-  echo "Calendar created successfully.\n";
+?>
+<html>
+  <head>
+    <title>UP Programming Guild Schedulre Reader</title>
+  </head>
+  <body>
+    <h1>Congratulations!</h1>
+    <p>Your calendar was successfully created.</p>
+    <p>Click <a href="/">here</a> to return to the main site.</p>
+    <p>If you are a member/recruit of UPPG, please share your new calendar with everyone@upprogrammingguild.org by going to <a href="http://calendar.upprogrammingguild.org">the UPPG Calendar</a> and sharing the newly created calendar. Thanks!</p>
+  </body>
+</html>
+<?php
   break;
 default:
   renderHTML($APP_URL);
@@ -198,8 +215,36 @@ function renderHTML($APP_URL) {
           <p>Browse to the CRS Grades Viewing page</p>
         </li>
         <li>
-          <p>Please paste the following code into the addof the CRS Preenlistment page</p>
-          <textarea disabled id='injector'>javascript:$(document.body).append('<script type="text/javascript" src="http://www.upprogrammingguild.org/schedreader/js/schedreader-client-loader.js"></script>');void(0);</textarea>
+          <p>Please paste the following code into the address bar. Please note that Chrome removes the "javascript:" at the start of the code when pasting into the address bar. Just type it in yourself (that is, paste the code below into the address bar of the CRS Grades Viewing page, then type "javascript:" at the start of the address bar.)</p>
+          <textarea disabled id='injector'>javascript:(function($) {
+    var arr = [];
+    var $tables = $('table[id="tbl_grade-info"]');
+    var $table = $tables.eq($tables.length - 2);
+    $table.find('tbody > tr > td:nth-child(2)').each(function(idx) {
+      var $this = $(this);
+      arr.push(+$this.text());
+    });
+    $(document.body).append('&lt;div id="sreader-overlay">&lt;/div>');
+    var $overlay = $('#sreader-overlay');
+    $overlay.css({
+        position: 'fixed',
+        width: '100%',
+        height: '200px',
+        'border-bottom': 'thin solid #444',
+        top: 0,
+        left: 0,
+        background: '#eee'
+    });
+    $overlay.append('&lt;div>&lt;div>Copy and paste the following to SchedReader:&lt;/div>'
+      + '&lt;textarea readonly>' + JSON.stringify(arr) + '&lt;/textarea>&lt;/div>');
+    $('#sreader-overlay > div').css({
+        padding: '1em'
+    });
+    $('#sreader-overlay textarea').css({
+        width: '80%',
+        height: '10em'
+    });
+})(jQuery);</textarea>
         </li>
         <li>
           <p>Please copy the resulting text into this textbox:</p>
