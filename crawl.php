@@ -21,7 +21,7 @@ function parseTime($timeStr) {
     $timeStr = substr($timeStr, 0, $len-2);
   }
   $arr = explode(':', $timeStr);
-  $time['time']['h'] += +$arr[0];
+  $time['time']['h'] += +$arr[0] % 12;
   if (count($arr) == 2) {
     $time['time']['m'] += +$arr[1];
   }
