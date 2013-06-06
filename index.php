@@ -77,7 +77,7 @@ case 'make_calendar':
 }
 EOT;
     // TODO: Somehow make this (starting dates) unhardcoded.
-    $map = array("TU" => 19, "WE" => 13, "TH" => 14, "FR" => 15, "SA" => 16, "MO" => 11);
+    $map = array("TU" => 11, "WE" => 12, "TH" => 6, "FR" => 7, "SA" => 8, "MO" => 10);
     $response = $calService->post($cal_str, "https://www.google.com/calendar/feeds/default/owncalendars/full",
       null, "application/json");
     $json_cal_entry = json_decode($response->getBody());
@@ -105,8 +105,8 @@ SELECT c.class class, TIME_FORMAT(m.time_start, '%H%i') time_start,
   GROUP BY
     c.code, c.year, c.sem, c.class, m.time_start, m.time_end
   HAVING
-    c.code = :code
-    AND c.year = 2012
+    c.code = 54603
+    AND c.year = 2013
     AND c.sem = 1
 EOT
 );
@@ -122,11 +122,11 @@ EOT
           $event->title = $calService->newTitle($sched['class']);
           $event->content = $calService->newContent($sched['class']);
           // TODO: Somehow make the year/month unhardcoded
-          $dateVal = "DATETIME:201206" . $map[substr($sched['days'], 0, 2)];
+          $dateVal = "DATETIME:201306" . $map[substr($sched['days'], 0, 2)];
           // TODO: Somehow make the end year/month unhardcoded
           $recurrence = "DTSTART;TZID=Asia/Manila;VALUE={$dateVal}T{$sched['time_start']}00\r\n" .
             "DTEND;TZID=Asia/Manila;VALUE={$dateVal}T{$sched['time_end']}00\r\n" .
-            "RRULE:FREQ=WEEKLY;BYDAY=" . $sched['days'] . ";UNTIL=20121008\r\n";
+            "RRULE:FREQ=WEEKLY;BYDAY=" . $sched['days'] . ";UNTIL=20131004\r\n";
           $event->recurrence = $calService->newRecurrence($recurrence);
           //echo "$recurrence\n";
           $newEvent = $calService->insertEvent($event, $uri);
