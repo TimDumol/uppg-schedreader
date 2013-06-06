@@ -105,7 +105,7 @@ SELECT c.class class, TIME_FORMAT(m.time_start, '%H%i') time_start,
   GROUP BY
     c.code, c.year, c.sem, c.class, m.time_start, m.time_end
   HAVING
-    c.code = 54603
+    c.code = :code
     AND c.year = 2013
     AND c.sem = 1
 EOT
