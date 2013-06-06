@@ -79,7 +79,7 @@ try {
 }
 
 
-for ($ascii = ord('R'); $ascii <= ord('Z'); ++$ascii) {
+for ($ascii = ord('A'); $ascii <= ord('Z'); ++$ascii) {
 $ch = curl_init('https://crs.upd.edu.ph/schedule/120131/' . chr($ascii));
 $fp = fopen('/tmp/schedreader-page.html','w');
 curl_setopt_array($ch, array(
