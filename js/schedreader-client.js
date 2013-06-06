@@ -1,6 +1,6 @@
 (function($) {
     var arr = [];
-    var $tables = $('table[id="tbl_grade-info"]');
+    var $tables = $('table.tbl_grade-info');
     for (var i = $tables.length-1; i >= 0; --i) {
       var $table = $tables.eq(i);
       if ($table.find('thead > tr:nth-child(2) > th:nth-child(2)').text() === 'Class Code') {

@@ -198,7 +198,7 @@ function renderHTML($APP_URL) {
           <p>Please paste the following code into the address bar. Please note that Chrome removes the "javascript:" at the start of the code when pasting into the address bar. Just type it in yourself (that is, paste the code below into the address bar of the CRS Grades Viewing page, then type "javascript:" at the start of the address bar.) If you encounter any problems, please try it in a modern browser such as Chrome or Firefox first.</p>
           <textarea disabled id='injector'>javascript:(function($) {
     var arr = [];
-    var $tables = $('table[id="tbl_grade-info"]');
+    var $tables = $('table.tbl_grade-info');
     for (var i = $tables.length-1; i >= 0; --i) {
       var $table = $tables.eq(i);
       if ($table.find('thead > tr:nth-child(2) > th:nth-child(2)').text() === 'Class Code') {
