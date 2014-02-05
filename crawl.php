@@ -80,7 +80,7 @@ try {
 
 
 for ($ascii = ord('A'); $ascii <= ord('Z'); ++$ascii) {
-$ch = curl_init('https://crs.upd.edu.ph/schedule/120131/' . chr($ascii));
+$ch = curl_init('https://crs.upd.edu.ph/schedule/120132/' . chr($ascii));
 $fp = fopen('/tmp/schedreader-page.html','w');
 curl_setopt_array($ch, array(
   CURLOPT_HEADER => true,
@@ -136,7 +136,7 @@ if ($nodes) {
     $classStmt->bindParam(':class', $class);
     // TODO: un-hardcode year and sem
     $year = 2013;
-    $sem = 1;
+    $sem = 2;
     $classStmt->bindParam(':year', $year);
     $classStmt->bindParam(':sem', $sem);
     $classStmt->execute();
