@@ -141,13 +141,13 @@ EOT
 ?>
 <html>
   <head>
-    <title>UP Programming Guild Schedulre Reader</title>
+    <title>CRS Schedule Reader</title>
   </head>
   <body>
     <h1>Congratulations!</h1>
     <p>Your calendar was successfully created.</p>
     <p>Click <a href="/">here</a> to return to the main site.</p>
-    <p>If you are a member/recruit of UPPG, please share your new calendar with everyone@upprogrammingguild.org by going to <a href="http://calendar.upprogrammingguild.org">the UPPG Calendar</a> and sharing the newly created calendar. Thanks!</p>
+    <p>To share your new calendar, go to <a href="http://calendar.google.com">Google Calendar</a>, hover over your calendar (under the My calendars area), click on the arrow, then click "Share this Calendar".
   </body>
 </html>
 <?php
@@ -183,10 +183,9 @@ function renderHTML($APP_URL) {
     <link href="css/style.css" type="text/css" rel="stylesheet"/>
   </head>
   <body>
-    <h1>Welcome to the UPPG Schedule Reader</h1>
+    <h1>Welcome to the CRS Schedule Reader</h1>
     <?php if (!isset($_SESSION['ACCESS_TOKEN'])) { ?>
-    <button onclick="location.href='<?php echo "$APP_URL?action=request_token" ?>';">Click here to authorize the UPPG Schedule Reader to access your Google Calendar</button>
-    <p>For UPPG members/recruits, please use your provided upprogrammingguild.org account to access the calendar.</p>
+    <button onclick="location.href='<?php echo "$APP_URL?action=request_token" ?>';">Click here to authorize the CRS Schedule Reader to access your Google Calendar</button>
     <?php } else { ?>
     <div id="logout"><a href="<?php echo "$APP_URL?action=logout"; ?>">Logout</a></div>
     <form method="POST" action="<?php echo "$APP_URL?action=make_calendar"; ?>">
